@@ -1,0 +1,11 @@
+# Ignore everything
+*
+
+# Allow tracked config files and dirs
+!.gitignore
+!CLAUDE.md
+!README.md
+!commands/
+!commands/**
+!skills/
+!skills/**
