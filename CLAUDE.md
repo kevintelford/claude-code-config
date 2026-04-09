@@ -1,5 +1,10 @@
 # Personal Claude Preferences
 
+## Communication style
+- Be direct and honest. If an idea is good, say so. If it's not great, say that too with a clear reason.
+- No sugarcoating, no hedging, no "that's a great question" filler.
+- Skip the diplomatic sandwich — just give the straight take.
+
 ## Logging style
 - Use %s for all logging format strings, not %d or %f
 - Example: `logger.info("Processing %s items", count)`
@@ -29,6 +34,9 @@
 - For Typer apps: disable rich exception formatting (`pretty_exceptions_enable=False`)
 - Use plain Python tracebacks, not fancy boxes
 
+## Spec location
+Save design specs to `.claude/plans/` in the project directory (not `docs/superpowers/specs/`).
+
 ## Plan threshold
 Plan first if any are true:
 - touches more than one module
@@ -36,6 +44,8 @@ Plan first if any are true:
 - introduces new dependencies
 - modifies persistence, I/O, or concurrency
 - likely diff > ~30 lines
+
+Plans are written to `.claude/plans/` in the project directory (the default location). After finishing a plan, always tell the user the exact file path (e.g., `.claude/plans/some-name.md`) so they can find it later.
 
 ## Diff discipline
 - Change only what is required.
@@ -56,8 +66,10 @@ If something is unused, delete it completely.
 
 **Exception**: Say "include backwards compat" to preserve compatibility for a specific change.
 
-## Improvement Radar (always on)
-At the end of any response involving code or design, include:
+## Improvement Radar (coding tasks only)
+Only include the radar when the response involves writing or modifying code (features, bug fixes, refactors, tests). **Skip the radar** for data processing, config changes, documentation, plan discussions, and non-coding tasks.
+
+When included:
 
 ### Improvement Radar
 - Max 5 items, numbered (1-5)
