@@ -8,4 +8,12 @@
 !commands/
 !commands/**
 !skills/
-!skills/**
+!skills/*/
+# Individual skills must be force-added: git add -f skills/<name>/
+skills/**
+!skills/cross-dep/**
+!skills/data-validate/**
+!skills/dep-audit/**
+!skills/error-trace/**
+!skills/pipeline-check/**
+!skills/security-audit/**

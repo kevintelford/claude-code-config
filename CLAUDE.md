@@ -96,5 +96,31 @@ Files in this repo (`dotfiles/claude/`) are shared and version-controlled. Befor
 
 If anything looks project-specific or potentially sensitive, **stop and ask** before writing it. Prefer generic placeholders (`{{variable}}`) over concrete values.
 
+## Secure coding (OWASP Top 10 + general)
+Always write secure code by default. Don't wait for a security review to fix these:
+- **Injection**: Parameterize all queries (SQL, NoSQL, OS commands, LDAP). Never build queries via string concatenation with user input. Use ORMs or parameterized APIs.
+- **XSS**: Escape/sanitize all user-supplied content before rendering in HTML. Use framework-provided escaping (Jinja2 autoescape, React JSX).
+- **Authentication/Authorization**: Don't roll custom auth. Use established libraries. Check permissions on every endpoint, not just the UI. Validate JWTs properly.
+- **Secrets management**: Never hardcode API keys, passwords, or tokens. Use env vars or a secrets manager. Don't log secrets. Don't commit `.env` files.
+- **Input validation**: Validate at system boundaries — user input, API parameters, file uploads, webhook payloads. Reject unexpected types/sizes/formats early.
+- **Dependency security**: Keep dependencies updated. Audit for known CVEs (`uv audit`, `pip-audit`). Pin versions in production.
+- **Path traversal**: Validate file paths. Don't allow user input to construct file paths without sanitization. Reject `../` patterns.
+- **Error handling**: Don't expose stack traces, internal paths, or system details in user-facing errors. Log details server-side, return generic messages to clients.
+- **CORS/CSRF**: Configure CORS restrictively. Use CSRF tokens for state-changing operations.
+
+## LLM application security (OWASP Top 10 for LLMs)
+When writing code that involves LLM calls, RAG pipelines, or user-facing AI features, keep these in mind:
+- **Prompt injection**: Treat all document content and user input as untrusted. RAG chunks should never modify system prompt behavior. Validate/sanitize inputs before injecting into prompts.
+- **Sensitive data in outputs**: LLM outputs may echo sensitive content from input documents. Don't log full outputs at INFO level. Sanitize client names in benchmark data, holdfast evidence, and any file that could be committed to git.
+- **System prompt leakage**: Prompts contain proprietary methodology. Never expose system prompts via API responses, error messages, or debug output.
+- **Vector/embedding poisoning**: Documents loaded into vector DBs are untrusted. Validate before ingestion. Monitor for anomalous retrieval results.
+- **Unbounded consumption**: Cap concurrent LLM calls (max_workers), enforce retry limits, track token usage. A runaway loop can burn through API budget fast.
+- **Output validation**: Always validate LLM structured output against the expected schema before using it downstream. Don't trust that the model returned what you asked for.
+
+## Git commit policy
+- **Default**: Make code changes freely, but do NOT commit unless explicitly asked.
+- Per-project override: If a project's `CLAUDE.md` says "auto-commit allowed", then commit after completing work.
+- When asked to commit, follow the standard commit protocol (status, diff, log, then commit).
+
 ## Scope toggle
 If the user says **"include improvements"**, you may implement only 1–2 S-sized radar items.
